@@ -1,5 +1,5 @@
 import { RecoilRoot } from "recoil";
-import { BrowserRouter as Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
@@ -11,17 +11,11 @@ function App() {
   return (
     <RecoilRoot>
       <Header />
-      <Switch>
-        <Route exact path="/">
-          <Main />
-        </Route>
-        <Route path="/products/list">
-          <ProductList />
-        </Route>
-        <Route path="/bookmark">
-          <BookmarkList />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route exact path="/" element={<Main />} />
+        <Route path="/products/list" element={<ProductList />} />
+        <Route path="/bookmark" element={<BookmarkList />} />
+      </Routes>
       <Footer />
     </RecoilRoot>
   );
