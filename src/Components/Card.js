@@ -27,6 +27,7 @@ const CardContainer = styled.article`
       width: 100%;
       height: 24px;
       min-height: 24px;
+      font-weight: bold;
     }
     > .info-bottom {
       width: 100%;
