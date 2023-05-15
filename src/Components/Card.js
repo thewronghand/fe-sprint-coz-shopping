@@ -21,7 +21,14 @@ const CardContainer = styled.article`
       height: 100%;
       background-color: #d9d9d9;
     }
+    > .overlay {
+      position: fixed;
+      color: red;
+      left: 229px;
+      top: 174px;
+    }
   }
+
   > .item-info {
     > .info-top {
       width: 100%;
@@ -41,12 +48,13 @@ function Card({ image, overlay, infoTop, infoBottom }) {
   return (
     <CardContainer>
       <div className="image-container">
+        <div className="overlay">{overlay}</div>
         {image ? image : <div className="placeholder" />}
       </div>
-      {overlay}
+
       <section className="item-info">
-        <div className="info-top">{infoTop}</div>
-        <div className="info-bottom">{infoBottom}</div>
+        {infoTop && <div className="info-top">{infoTop}</div>}
+        {infoBottom && <div className="info-bottom">{infoBottom}</div>}
       </section>
     </CardContainer>
   );
