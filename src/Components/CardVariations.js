@@ -1,4 +1,5 @@
 import Card from "./Card";
+import Bookmark from "./Bookmark";
 
 const generateCardByType = (data) => {
   switch (data.type) {
@@ -19,6 +20,7 @@ const generateCardByType = (data) => {
             )
           }
           infoBottom={<div style={{ textAlign: "right" }}>{data.price}</div>}
+          overlay={<Bookmark data={data} />}
         />
       );
     case "Category":
@@ -26,6 +28,7 @@ const generateCardByType = (data) => {
         <Card
           image={<img src={data.image_URL} alt={data.title} />}
           infoTop={"# " + data.title}
+          overlay={<Bookmark data={data} />}
         />
       );
     case "Exhibition":
@@ -34,6 +37,7 @@ const generateCardByType = (data) => {
           image={<img src={data.image_URL} alt={data.title} />}
           infoTop={data.title}
           infoBottom={data.sub_title}
+          overlay={<Bookmark data={data} />}
         />
       );
     case "Brand":
@@ -47,6 +51,7 @@ const generateCardByType = (data) => {
             </div>
           }
           infoBottom={<div style={{ textAlign: "right" }}>{data.follower}</div>}
+          overlay={<Bookmark data={data} />}
         />
       );
     default:

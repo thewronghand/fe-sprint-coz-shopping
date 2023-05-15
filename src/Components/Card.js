@@ -12,6 +12,7 @@ const CardContainer = styled.article`
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 6px;
+    position: relative;
     > img {
       width: 100%;
       height: 100%;
@@ -22,7 +23,7 @@ const CardContainer = styled.article`
       background-color: #d9d9d9;
     }
     > .overlay {
-      position: fixed;
+      position: absolute;
       color: red;
       left: 229px;
       top: 174px;
