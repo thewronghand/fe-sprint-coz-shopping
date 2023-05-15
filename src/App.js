@@ -7,13 +7,13 @@ import BookmarkList from "./Pages/BookmarkList";
 
 function App() {
   return (
-    <RecoilRoot>
+    <>
       <Routes>
         <Route exact path="/" element={<Main />} />
         <Route path="/products/list" element={<ProductList />} />
         <Route path="/bookmark" element={<BookmarkList />} />
       </Routes>
-    </RecoilRoot>
+    </>
   );
 }
 
