@@ -1,7 +1,6 @@
-// Bookmark.js
 import { useEffect } from "react";
 
-function Bookmark({ data, isBookmarked, setIsBookmarked }) {
+function Bookmark({ data, isBookmarked, setIsBookmarked, onToggleBookmark }) {
   useEffect(() => {
     checkBookmarkStatus();
   }, [data]);
@@ -28,6 +27,7 @@ function Bookmark({ data, isBookmarked, setIsBookmarked }) {
       localStorage.setItem("bookmark", JSON.stringify(updatedBookmarks));
       setIsBookmarked(true);
     }
+    onToggleBookmark();
   };
 
   return (

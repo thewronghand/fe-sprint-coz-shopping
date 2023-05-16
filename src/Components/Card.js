@@ -90,7 +90,7 @@ const CardContainer = styled.article`
   }
 `;
 
-function Card({ image, infoTop, infoBottom, data }) {
+function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
@@ -100,6 +100,7 @@ function Card({ image, infoTop, infoBottom, data }) {
 
   const handleBookmarkUpdate = () => {
     setIsBookmarked(!isBookmarked);
+    onBookmarkToggle(isBookmarked);
   };
 
   return (
@@ -117,7 +118,7 @@ function Card({ image, infoTop, infoBottom, data }) {
               <Bookmark
                 isBookmarked={isBookmarked}
                 setIsBookmarked={setIsBookmarked}
-                toggleBookmark={handleBookmarkUpdate}
+                onToggleBookmark={handleBookmarkUpdate}
                 data={data}
               />
             </div>
@@ -132,7 +133,7 @@ function Card({ image, infoTop, infoBottom, data }) {
           <Bookmark
             isBookmarked={isBookmarked}
             setIsBookmarked={setIsBookmarked}
-            toggleBookmark={handleBookmarkUpdate}
+            onToggleBookmark={handleBookmarkUpdate}
             data={data}
           />
         </div>
