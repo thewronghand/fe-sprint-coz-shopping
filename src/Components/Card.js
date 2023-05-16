@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 
 import Bookmark from "./Bookmark";
+import { useRecoilState } from "recoil";
+import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 
 const CardContainer = styled.article`
   width: 264px;
@@ -92,15 +94,35 @@ const CardContainer = styled.article`
 
 function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarks, setBookmarks] = useRecoilState(bookmarksState);
+  const [isBookmarked, setIsBookmarked] = useState(!!bookmarks[data.id]);
+  const [bookmarksOrder, setBookmarksOrder] =
+    useRecoilState(bookmarksOrderState);
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  useEffect(() => {
+    setIsBookmarked(!!bookmarks[data.id]);
+  }, [bookmarks, data.id]);
+
   const handleBookmarkUpdate = () => {
+    if (!isBookmarked) {
+      const prevBookmarks = { ...bookmarks };
+      setBookmarks({ ...prevBookmarks, [data.id]: data });
+      setBookmarksOrder([data.id, ...bookmarksOrder]);
+    } else {
+      const prevBookmarks = { ...bookmarks };
+      delete prevBookmarks[data.id];
+      setBookmarks(prevBookmarks);
+      setBookmarksOrder(bookmarksOrder.filter((item) => item !== data.id));
+    }
     setIsBookmarked(!isBookmarked);
     onBookmarkToggle(isBookmarked);
+    if (isModalOpen) {
+      setIsModalOpen(!isModalOpen);
+    }
   };
 
   return (
@@ -117,9 +139,7 @@ function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
             <div className="modal-overlay_overlay">
               <Bookmark
                 isBookmarked={isBookmarked}
-                setIsBookmarked={setIsBookmarked}
-                onToggleBookmark={handleBookmarkUpdate}
-                data={data}
+                onClick={handleBookmarkUpdate}
               />
             </div>
             <div className="modal-overlay_title">{data.title}</div>
@@ -132,9 +152,7 @@ function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
         <div className="overlay" onClick={(e) => e.stopPropagation()}>
           <Bookmark
             isBookmarked={isBookmarked}
-            setIsBookmarked={setIsBookmarked}
-            onToggleBookmark={handleBookmarkUpdate}
-            data={data}
+            onClick={handleBookmarkUpdate}
           />
         </div>
         {image ? image : <div className="placeholder" />}
