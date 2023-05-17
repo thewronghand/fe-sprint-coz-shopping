@@ -1,9 +1,59 @@
 import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import Card from "../Components/Card";
+import { styled } from "styled-components";
+
 import Toast from "../Components/Toast";
 import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
+import { ReactComponent as EmptyFolderIcon } from "../folder-open-regular.svg";
+
+const MainContainer = styled.main`
+  padding-top: 52px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ListSection = styled.section`
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const SectionTitle = styled.div`
+  width: 1130px;
+  font-weight: 600;
+  font-size: 24px;
+`;
+
+const ItemList = styled.ul`
+  width: 1152px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+`;
+
+const EmptyBookmarkListIndicator = styled.div`
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 288px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #452cdd;
+  > .sub-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: black;
+    margin-top: 5px;
+  }
+`;
 
 function Main() {
   const [products, setProducts] = useState({});
@@ -59,100 +109,43 @@ function Main() {
     addToastMessage(toastMessage);
   };
 
-  const testObj = {
-    36: {
-      id: 36,
-      type: "Exhibition",
-      title: "카공족 필수템",
-      sub_title: "베스트 아이템 30% 할인",
-      brand_name: null,
-      price: null,
-      discountPercentage: null,
-      image_url:
-        "https://images.unsplash.com/photo-1516342243255-ac2202f9f149?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      brand_image_url: null,
-      follower: null,
-    },
-    29: {
-      id: 29,
-      type: "Product",
-      title: "에어팟 맥스",
-      sub_title: null,
-      brand_name: null,
-      price: "110520",
-      discountPercentage: 50,
-      image_url:
-        "https://images.unsplash.com/photo-1625245488600-f03fef636a3c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80",
-      brand_image_url: null,
-      follower: null,
-    },
-    14: {
-      id: 14,
-      type: "Brand",
-      title: null,
-      sub_title: null,
-      brand_name: "나이키",
-      price: null,
-      discountPercentage: null,
-      image_url: null,
-      brand_image_url:
-        "https://images.unsplash.com/photo-1608541737042-87a12275d313?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1722&q=80",
-      follower: 7598,
-    },
-    86: {
-      id: 86,
-      type: "Brand",
-      title: null,
-      sub_title: null,
-      brand_name: "칼하트",
-      price: null,
-      discountPercentage: null,
-      image_url: null,
-      brand_image_url:
-        "https://images.unsplash.com/photo-1622408298915-24d322badf9e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1631&q=80",
-      follower: 6287,
-    },
-    96: {
-      id: 96,
-      type: "Category",
-      title: "다이어트",
-      sub_title: null,
-      brand_name: null,
-      price: null,
-      discountPercentage: null,
-      image_url:
-        "https://images.unsplash.com/photo-1627820751275-e44b937c5d33?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      brand_image_url: null,
-      follower: null,
-    },
-  };
-
   return (
-    <>
-      <div style={{ display: "flex" }}>
-        {Object.keys(products)
-          .slice(0, 4)
-          .map((key) => CardGenerator(products[key], handleBookmarkToggle))}
-      </div>
-      <div style={{ display: "flex" }}>
-        {Object.keys(testObj)
-          .slice(0, 4)
-          .map((key) => CardGenerator(testObj[key], handleBookmarkToggle))}
-      </div>
-      <div style={{ display: "flex" }}>
-        {bookmarks && bookmarksOrder.length > 0 ? (
-          bookmarksOrder
+    <MainContainer>
+      <ListSection>
+        <SectionTitle>상품 리스트</SectionTitle>
+        <ItemList>
+          {Object.keys(products)
             .slice(0, 4)
-            .map((key) => CardGenerator(bookmarks[key], handleBookmarkToggle))
-        ) : (
-          <div>북마크가 비었습니다.</div>
-        )}
-      </div>
+            .map((key) => CardGenerator(products[key], handleBookmarkToggle))}
+        </ItemList>
+      </ListSection>
+      <ListSection>
+        <SectionTitle>북마크 리스트</SectionTitle>
+        <ItemList>
+          {bookmarks && bookmarksOrder.length > 0 ? (
+            bookmarksOrder
+              .slice(0, 4)
+              .map((key) => CardGenerator(bookmarks[key], handleBookmarkToggle))
+          ) : (
+            <EmptyBookmarkListIndicator>
+              <EmptyFolderIcon
+                style={{
+                  width: "100px",
+                  marginBottom: "10px",
+                  fill: "#452cdd",
+                }}
+              />
+              <div>북마크한 상품이 하나도 없어요!</div>
+              <div className="sub-title">뭔가 담아볼까요?</div>
+            </EmptyBookmarkListIndicator>
+          )}
+        </ItemList>
+      </ListSection>
 
       <div className="toast-container">
         <Toast messages={toastMessages} removeToast={removeToastMessage} />
       </div>
-    </>
+    </MainContainer>
   );
 }
 
