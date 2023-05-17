@@ -5,7 +5,8 @@ import Bookmark from "./Bookmark";
 import { useRecoilState } from "recoil";
 import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 
-const CardContainer = styled.article`
+const CardContainer = styled.li`
+  margin: 12px;
   width: 264px;
   height: 264px;
   min-width: 264px;
@@ -28,6 +29,7 @@ const CardContainer = styled.article`
       height: 480px;
       border-radius: 12px;
       overflow: hidden;
+      z-index: 2;
       > img {
         width: 100%;
         height: 100%;

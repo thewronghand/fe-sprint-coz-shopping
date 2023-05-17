@@ -3,6 +3,7 @@ import Dropdown from "./Dropdown";
 import { Link } from "react-router-dom";
 
 const HeaderBar = styled.header`
+  background-color: white;
   box-sizing: border-box;
   top: 0;
   display: flex;
@@ -10,10 +11,11 @@ const HeaderBar = styled.header`
   justify-content: space-between;
   height: 80px;
   width: 100%;
-  position: fixed;
+  position: sticky;
   padding-right: 78px;
   padding-left: 76px;
   box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 `;
 
 const LogoContainer = styled.section`

@@ -12,7 +12,7 @@ const ToastContainer = styled.div`
   display: flex;
   position: fixed;
   overflow: hidden;
-  bottom: ${(props) => 20 + props.index * 70}px;
+  bottom: ${(props) => 0 + props.index * 70}px;
   right: 20px;
   background-color: white;
   border-radius: 12px;
