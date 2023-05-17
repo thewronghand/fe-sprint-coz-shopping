@@ -7,6 +7,11 @@ import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
 import { ReactComponent as EmptyFolderIcon } from "../folder-open-regular.svg";
 
+const defaultProductViewCount = 4;
+const sliceArrayByCount = (arr) => {
+  return arr.slice(0, defaultProductViewCount);
+};
+
 const MainContainer = styled.main`
   padding-top: 52px;
   display: flex;
@@ -114,18 +119,18 @@ function Main() {
       <ListSection>
         <SectionTitle>상품 리스트</SectionTitle>
         <ItemList>
-          {Object.keys(products)
-            .slice(0, 4)
-            .map((key) => CardGenerator(products[key], handleBookmarkToggle))}
+          {sliceArrayByCount(Object.keys(products)).map((key) =>
+            CardGenerator(products[key], handleBookmarkToggle)
+          )}
         </ItemList>
       </ListSection>
       <ListSection>
         <SectionTitle>북마크 리스트</SectionTitle>
         <ItemList>
           {bookmarks && bookmarksOrder.length > 0 ? (
-            bookmarksOrder
-              .slice(0, 4)
-              .map((key) => CardGenerator(bookmarks[key], handleBookmarkToggle))
+            sliceArrayByCount(bookmarksOrder).map((key) =>
+              CardGenerator(bookmarks[key], handleBookmarkToggle)
+            )
           ) : (
             <EmptyBookmarkListIndicator>
               <EmptyFolderIcon

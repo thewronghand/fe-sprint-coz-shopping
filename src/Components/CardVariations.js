@@ -1,5 +1,4 @@
 import Card from "./Card";
-import Bookmark from "./Bookmark";
 
 const CardGenerator = (data, handleBookmarkToggle) => {
   switch (data.type) {
@@ -24,15 +23,18 @@ const CardGenerator = (data, handleBookmarkToggle) => {
           }
           data={data}
           onBookmarkToggle={handleBookmarkToggle}
+          title={data.title}
         />
       );
     case "Category":
+      const title = `# ${data.title}`;
       return (
         <Card
           image={<img src={data.image_url} alt={data.title} />}
-          infoTop={"# " + data.title}
+          infoTop={title}
           data={data}
           onBookmarkToggle={handleBookmarkToggle}
+          title={title}
         />
       );
     case "Exhibition":
@@ -43,6 +45,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
           infoBottom={data.sub_title}
           data={data}
           onBookmarkToggle={handleBookmarkToggle}
+          title={data.sub_title}
         />
       );
     case "Brand":
@@ -58,6 +61,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
           infoBottom={<div style={{ textAlign: "right" }}>{data.follower}</div>}
           data={data}
           onBookmarkToggle={handleBookmarkToggle}
+          title={data.brand_name}
         />
       );
     default:

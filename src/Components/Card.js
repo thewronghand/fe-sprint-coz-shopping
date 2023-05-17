@@ -19,11 +19,12 @@ const CardContainer = styled.li`
     align-items: center;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
     top: 0;
     left: 0;
     z-index: 1;
     > .modal-overlay {
+      filter: drop-shadow(0px 0px 36px rgba(0, 0, 0, 0.5));
       position: relative;
       width: 744px;
       height: 480px;
@@ -94,7 +95,7 @@ const CardContainer = styled.li`
   }
 `;
 
-function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
+function Card({ image, infoTop, infoBottom, data, onBookmarkToggle, title }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookmarks, setBookmarks] = useRecoilState(bookmarksState);
   const [isBookmarked, setIsBookmarked] = useState(!!bookmarks[data.id]);
@@ -144,7 +145,7 @@ function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
                 onClick={handleBookmarkUpdate}
               />
             </div>
-            <div className="modal-overlay_title">{data.title}</div>
+            <div className="modal-overlay_title">{title}</div>
             {image}
           </article>
         </div>
