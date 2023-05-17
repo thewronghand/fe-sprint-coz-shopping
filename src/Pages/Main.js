@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { styled } from "styled-components";
 
+import Card from "../Components/Card";
+
 import Toast from "../Components/Toast";
 import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
@@ -100,7 +102,7 @@ function Main() {
       content: (
         <div className="toast">
           <img
-            src={!isBookmarked ? "bookmark-on.png" : "bookmark-off.png"}
+            src={!isBookmarked ? "/bookmark-on.png" : "/bookmark-off.png"}
             alt={!isBookmarked ? "bookmark-on" : "bookmark-off"}
           />
           <div className="toast-message">

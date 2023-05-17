@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 
 const CardContainer = styled.li`
+  list-style: none;
   margin: 12px;
   width: 264px;
   height: 264px;
@@ -56,29 +57,6 @@ const CardContainer = styled.li`
       }
     }
   }
-  > .image-container {
-    width: 100%;
-    height: 210px;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 6px;
-    position: relative;
-    > img {
-      width: 100%;
-      height: 100%;
-    }
-    > .placeholder {
-      width: 100%;
-      height: 100%;
-      background-color: #d9d9d9;
-    }
-    > .overlay {
-      position: absolute;
-      color: red;
-      left: 229px;
-      top: 174px;
-    }
-  }
 
   > .item-info {
     > .info-top {
@@ -92,6 +70,34 @@ const CardContainer = styled.li`
       height: 24px;
       min-height: 24px;
     }
+  }
+`;
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: 210px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+  > img {
+    width: 100%;
+    height: 100%;
+  }
+  > .placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #d9d9d9;
+  }
+  > .overlay {
+    position: absolute;
+    color: red;
+    left: 229px;
+    top: 174px;
   }
 `;
 
@@ -130,41 +136,41 @@ function Card({ image, infoTop, infoBottom, data, onBookmarkToggle, title }) {
 
   return (
     <CardContainer>
-      {isModalOpen && (
-        <div className="modal-backdrop" onClick={handleModalToggle}>
-          <article
-            className="modal-overlay"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-close" onClick={handleModalToggle}>
-              <img src="modal-close.png" alt="modal-close" />
-            </div>
-            <div className="modal-overlay_overlay">
-              <Bookmark
-                isBookmarked={isBookmarked}
-                onClick={handleBookmarkUpdate}
-              />
-            </div>
-            <div className="modal-overlay_title">{title}</div>
-            {image}
-          </article>
-        </div>
-      )}
-
-      <div className="image-container" onClick={handleModalToggle}>
-        <div className="overlay" onClick={(e) => e.stopPropagation()}>
-          <Bookmark
-            isBookmarked={isBookmarked}
-            onClick={handleBookmarkUpdate}
-          />
-        </div>
-        {image ? image : <div className="placeholder" />}
-      </div>
-
-      <section className="item-info">
-        {infoTop && <div className="info-top">{infoTop}</div>}
-        {infoBottom && <div className="info-bottom">{infoBottom}</div>}
-      </section>
+      <>
+        {isModalOpen && (
+          <div className="modal-backdrop" onClick={handleModalToggle}>
+            <article
+              className="modal-overlay"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-close" onClick={handleModalToggle}>
+                <img src="modal-close.png" alt="modal-close" />
+              </div>
+              <div className="modal-overlay_overlay">
+                <Bookmark
+                  isBookmarked={isBookmarked}
+                  onClick={handleBookmarkUpdate}
+                />
+              </div>
+              <div className="modal-overlay_title">{title}</div>
+              {image}
+            </article>
+          </div>
+        )}
+        <ImageContainer onClick={handleModalToggle}>
+          <div className="overlay" onClick={(e) => e.stopPropagation()}>
+            <Bookmark
+              isBookmarked={isBookmarked}
+              onClick={handleBookmarkUpdate}
+            />
+          </div>
+          {image ? image : <div className="placeholder" />}
+        </ImageContainer>
+        <section className="item-info">
+          {infoTop && <div className="info-top">{infoTop}</div>}
+          {infoBottom && <div className="info-bottom">{infoBottom}</div>}
+        </section>
+      </>
     </CardContainer>
   );
 }

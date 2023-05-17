@@ -1,4 +1,47 @@
+import { styled } from "styled-components";
+import { ReactComponent as SkeletonLoading } from "../skeleton-loading.svg";
+
 import Card from "./Card";
+
+const SkeletonContainer = styled.li`
+  list-style: none;
+  margin: 12px;
+  width: 264px;
+  height: 264px;
+  min-width: 264px;
+  min-height: 264px;
+  border-radius: 12px;
+  > .item-info {
+    width: 100%;
+    height: 24px;
+    min-height: 24px;
+    font-weight: bold;
+  }
+`;
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: 210px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+`;
+
+function SkeletonItem() {
+  return (
+    <SkeletonContainer>
+      <ImageContainer>
+        <SkeletonLoading style={{ width: "100px" }} />
+      </ImageContainer>
+      <section className="item-info">불러오는 중...</section>
+    </SkeletonContainer>
+  );
+}
 
 const CardGenerator = (data, handleBookmarkToggle) => {
   switch (data.type) {
@@ -65,7 +108,8 @@ const CardGenerator = (data, handleBookmarkToggle) => {
         />
       );
     default:
-      return <Card />;
+      return;
+    // return <SkeletonItem />;
   }
 };
 

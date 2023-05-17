@@ -32,10 +32,14 @@ function Header() {
     <HeaderBar>
       <Link to="/">
         <LogoContainer>
-          <img className="logo-image" src="header-logo.png" alt="header-logo" />
+          <img
+            className="logo-image"
+            src="/header-logo.png"
+            alt="header-logo"
+          />
           <img
             className="logo-title"
-            src="header-title.png"
+            src="/header-title.png"
             alt="header-title"
           />
         </LogoContainer>
