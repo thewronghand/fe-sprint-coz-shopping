@@ -31,7 +31,7 @@ const ProductListContainer = styled.ul`
 
 function ProductList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [products, setProducts] = useState({});
+  const [products, setProducts] = useState([]);
   const [toastMessages, setToastMessages] = useState([]);
   const bookmarks = useRecoilValue(bookmarksState);
   const bookmarksOrder = useRecoilValue(bookmarksOrderState);
@@ -91,13 +91,6 @@ function ProductList() {
     filterProducts();
   }, [products, currentFilter, renderedItemsCount]);
 
-  useEffect(() => {
-    if (!isLoading && loadingRef.current) {
-      // 로딩이 끝나고 스크롤 위치가 저장되어 있는 경우
-      loadingRef.current.scrollIntoView(); // 스크롤 위치로 이동
-    }
-  }, [isLoading]);
-
   const addToastMessage = (message) => {
     setToastMessages((prevMessages) => [message, ...prevMessages]);
   };
@@ -128,6 +121,13 @@ function ProductList() {
     }
     addToastMessage(toastMessage);
   };
+
+  useEffect(() => {
+    if (!isLoading && loadingRef.current) {
+      // 로딩이 끝나고 스크롤 위치가 저장되어 있는 경우
+      loadingRef.current.scrollIntoView(); // 스크롤 위치로 이동
+    }
+  }, [isLoading]);
 
   return (
     <ProductListMain>

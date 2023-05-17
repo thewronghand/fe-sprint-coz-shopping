@@ -52,7 +52,7 @@ function Filter({ setCurrentFilter }) {
     },
   };
 
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState("All");
   const handleFilterToggle = (filter) => {
     setSelectedFilter(filter);
     setCurrentFilter(filter);
