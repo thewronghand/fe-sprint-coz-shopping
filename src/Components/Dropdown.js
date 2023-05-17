@@ -2,6 +2,8 @@ import { useState } from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 
+const user = "OOO";
+
 const DropdownToggle = styled.button`
   border: none;
   background-color: white;
@@ -102,7 +104,7 @@ function Dropdown() {
         <DropdownMenu>
           <ul>
             <li className="welcome">
-              <div>OOO님, 안녕하세요!</div>
+              <div>{`${user}님, 안녕하세요!`}</div>
             </li>
 
             <li className="product-link">

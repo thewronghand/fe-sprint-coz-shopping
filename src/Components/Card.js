@@ -5,7 +5,8 @@ import Bookmark from "./Bookmark";
 import { useRecoilState } from "recoil";
 import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 
-const CardContainer = styled.article`
+const CardContainer = styled.li`
+  margin: 12px;
   width: 264px;
   height: 264px;
   min-width: 264px;
@@ -18,16 +19,18 @@ const CardContainer = styled.article`
     align-items: center;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
     top: 0;
     left: 0;
     z-index: 1;
     > .modal-overlay {
+      filter: drop-shadow(0px 0px 36px rgba(0, 0, 0, 0.5));
       position: relative;
       width: 744px;
       height: 480px;
       border-radius: 12px;
       overflow: hidden;
+      z-index: 2;
       > img {
         width: 100%;
         height: 100%;
@@ -92,7 +95,7 @@ const CardContainer = styled.article`
   }
 `;
 
-function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
+function Card({ image, infoTop, infoBottom, data, onBookmarkToggle, title }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookmarks, setBookmarks] = useRecoilState(bookmarksState);
   const [isBookmarked, setIsBookmarked] = useState(!!bookmarks[data.id]);
@@ -142,7 +145,7 @@ function Card({ image, infoTop, infoBottom, data, onBookmarkToggle }) {
                 onClick={handleBookmarkUpdate}
               />
             </div>
-            <div className="modal-overlay_title">{data.title}</div>
+            <div className="modal-overlay_title">{title}</div>
             {image}
           </article>
         </div>
