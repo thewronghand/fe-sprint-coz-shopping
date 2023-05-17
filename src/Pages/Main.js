@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { styled } from "styled-components";
 
 import Card from "../Components/Card";
@@ -9,6 +9,7 @@ import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
 import { ReactComponent as EmptyFolderIcon } from "../folder-open-regular.svg";
 
+const maxToastCount = 4;
 const defaultProductViewCount = 4;
 const sliceArrayByCount = (arr) => {
   return arr.slice(0, defaultProductViewCount);
@@ -64,9 +65,8 @@ const EmptyBookmarkListIndicator = styled.div`
 
 function Main() {
   const [products, setProducts] = useState({});
-  const [bookmarks, setBookmarks] = useRecoilState(bookmarksState);
-  const [bookmarksOrder, setBookmarksOrder] =
-    useRecoilState(bookmarksOrderState);
+  const bookmarks = useRecoilValue(bookmarksState);
+  const bookmarksOrder = useRecoilValue(bookmarksOrderState);
 
   useEffect(() => {
     fetch("http://cozshopping.codestates-seb.link/api/v1/products?count=4")
@@ -85,7 +85,7 @@ function Main() {
 
   useEffect(() => {
     localStorage.setItem("bookmarksOrder", JSON.stringify(bookmarksOrder));
-  });
+  }, [bookmarksOrder]);
 
   const [toastMessages, setToastMessages] = useState([]);
   const addToastMessage = (message) => {
@@ -113,6 +113,9 @@ function Main() {
         </div>
       ),
     };
+    if (toastMessages.length >= maxToastCount) {
+      removeToastMessage(toastMessages[toastMessages.length - 1].id);
+    }
     addToastMessage(toastMessage);
   };
 

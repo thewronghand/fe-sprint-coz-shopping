@@ -47,6 +47,7 @@ function Filter({ setCurrentFilter }) {
     <FilterList>
       {Object.keys(filters).map((title) => (
         <FilterButton
+          key={title}
           onClick={() => handleFilterToggle(title)}
           selected={selectedFilter === title}
         >

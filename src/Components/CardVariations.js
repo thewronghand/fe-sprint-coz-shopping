@@ -48,6 +48,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
     case "Product":
       return (
         <Card
+          key={data.id}
           image={<img src={data.image_url} alt={data.title} />}
           infoTop={
             data.discountPercentage ? (
@@ -73,6 +74,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
       const title = `# ${data.title}`;
       return (
         <Card
+          key={data.id}
           image={<img src={data.image_url} alt={data.title} />}
           infoTop={title}
           data={data}
@@ -83,6 +85,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
     case "Exhibition":
       return (
         <Card
+          key={data.id}
           image={<img src={data.image_url} alt={data.title} />}
           infoTop={data.title}
           infoBottom={data.sub_title}
@@ -94,6 +97,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
     case "Brand":
       return (
         <Card
+          key={data.id}
           image={<img src={data.brand_image_url} alt={data.title} />}
           infoTop={
             <div style={{ display: "flex", justifyContent: "space-between" }}>

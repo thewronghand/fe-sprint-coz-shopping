@@ -1,5 +1,23 @@
 import { useEffect, useState } from "react";
-import { styled } from "styled-components";
+import { styled, keyframes } from "styled-components";
+
+const slideIn = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+`;
+
+const slideOut = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+`;
 
 const ToastList = styled.section`
   display: flex;
@@ -21,7 +39,7 @@ const ToastContainer = styled.div`
   color: black;
   padding: 10px 20px;
   z-index: 9999;
-  animation: toastAnimation 0.5s ease-in-out;
+  animation: ${slideIn} 0.5s ease, ${slideOut} 0.5s ease 2.5s forwards;
 
   > .toast {
     display: flex;
