@@ -30,14 +30,29 @@ const FilterButton = styled.button`
 
 function Filter({ setCurrentFilter }) {
   const filters = {
-    전체: "/filter-all.png",
-    상품: "/filter-product.png",
-    카테고리: "/filter-category.png",
-    기획전: "/filter-exhibition.png",
-    브랜드: "/filter-brand.png",
+    All: {
+      title: "전체",
+      img_url: "/filter-all.png",
+    },
+    Product: {
+      title: "상품",
+      img_url: "/filter-product.png",
+    },
+    Category: {
+      title: "카테고리",
+      img_url: "/filter-category.png",
+    },
+    Exhibition: {
+      title: "기획전",
+      img_url: "/filter-exhibition.png",
+    },
+    Brand: {
+      title: "브랜드",
+      img_url: "/filter-brand.png",
+    },
   };
 
-  const [selectedFilter, setSelectedFilter] = useState("전체");
+  const [selectedFilter, setSelectedFilter] = useState("all");
   const handleFilterToggle = (filter) => {
     setSelectedFilter(filter);
     setCurrentFilter(filter);
@@ -45,14 +60,14 @@ function Filter({ setCurrentFilter }) {
 
   return (
     <FilterList>
-      {Object.keys(filters).map((title) => (
+      {Object.keys(filters).map((filter) => (
         <FilterButton
-          key={title}
-          onClick={() => handleFilterToggle(title)}
-          selected={selectedFilter === title}
+          key={filters[filter].title}
+          onClick={() => handleFilterToggle(filter)}
+          selected={selectedFilter === filter}
         >
-          <img src={filters[title]} alt={title} />
-          <div>{title}</div>
+          <img src={filters[filter].img_url} alt={filters[filter].title} />
+          <div>{filters[filter].title}</div>
         </FilterButton>
       ))}
     </FilterList>
