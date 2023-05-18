@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import { useRecoilValue } from "recoil";
-import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
-import { styled } from "styled-components";
+import { bookmarksState } from "../recoil/bookmarksState";
 
 import CardGenerator from "../Components/CardVariations";
 import Toast from "../Components/Toast";
@@ -17,7 +16,6 @@ const initialItemViewCount = 16;
 
 function BookmarkList() {
   const bookmarks = useRecoilValue(bookmarksState);
-  const bookmarksOrder = useRecoilValue(bookmarksOrderState);
 
   const [currentFilter, setCurrentFilter] = useState("All");
   const [filteredBookmarks, setFilteredBookmarks] = useState([]);
@@ -29,30 +27,29 @@ function BookmarkList() {
   const loadingRef = useRef(null);
 
   useEffect(() => {
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    localStorage.setItem(
+      "bookmarks",
+      JSON.stringify(Array.from(bookmarks.entries()))
+    );
   }, [bookmarks]);
 
   useEffect(() => {
-    localStorage.setItem("bookmarksOrder", JSON.stringify(bookmarksOrder));
-  }, [bookmarksOrder]);
-
-  useEffect(() => {
     const filterProducts = () => {
-      const filtered = bookmarksOrder
+      const filtered = Array.from(bookmarks.values())
+        .reverse()
         .filter((item) => {
           if (currentFilter === "All") return true;
-          return bookmarks[item].type === currentFilter;
+          return item.type === currentFilter;
         })
-        .slice(0, renderedItemsCount)
-        .map((item) => bookmarks[item]);
+        .slice(0, renderedItemsCount);
       setFilteredBookmarks(filtered);
     };
     filterProducts();
-  }, [bookmarks, bookmarksOrder, currentFilter, renderedItemsCount]);
+  }, [bookmarks, currentFilter, renderedItemsCount]);
 
   useEffect(() => {
     let delay;
-    if (inView && renderedItemsCount < bookmarksOrder.length) {
+    if (inView && renderedItemsCount < bookmarks.size) {
       setIsLoading(true);
       delay = setTimeout(() => {
         setIsLoading(false);
@@ -124,7 +121,7 @@ function BookmarkList() {
         </div>
       </ListContainer>
       <div ref={ref} />
-      {Object.keys(bookmarks).length === 0 && (
+      {bookmarks.size === 0 && (
         <EmptyBookmarkListIndicator>
           <EmptyFolderIcon
             style={{
@@ -137,7 +134,7 @@ function BookmarkList() {
           <div className="sub-title">뭔가 담아볼까요?</div>
         </EmptyBookmarkListIndicator>
       )}
-      {Object.keys(bookmarks).length > initialItemViewCount && isLoading && (
+      {bookmarks.size > initialItemViewCount && isLoading && (
         <SkeletonLoading />
       )}
     </ListMain>

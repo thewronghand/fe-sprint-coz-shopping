@@ -1,34 +1,30 @@
 import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
+import { bookmarksState } from "../recoil/bookmarksState";
 import { CardContainer, ImageContainer } from "./styles/CardStyles";
 import Bookmark from "./Bookmark";
 
 function Card({ image, infoTop, infoBottom, data, onBookmarkToggle, title }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookmarks, setBookmarks] = useRecoilState(bookmarksState);
-  const [bookmarksOrder, setBookmarksOrder] =
-    useRecoilState(bookmarksOrderState);
-  const [isBookmarked, setIsBookmarked] = useState(!!bookmarks[data.id]);
+  const [isBookmarked, setIsBookmarked] = useState(!!bookmarks.get(data.id));
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
   };
 
   useEffect(() => {
-    setIsBookmarked(!!bookmarks[data.id]);
+    setIsBookmarked(!!bookmarks.get(data.id));
   }, [bookmarks, data.id]);
 
   const handleBookmarkUpdate = () => {
+    const prevBookmarks = new Map(bookmarks);
+
     if (!isBookmarked) {
-      const prevBookmarks = { ...bookmarks };
-      setBookmarks({ ...prevBookmarks, [data.id]: data });
-      setBookmarksOrder([data.id, ...bookmarksOrder]);
+      prevBookmarks.set(data.id, data);
     } else {
-      const prevBookmarks = { ...bookmarks };
-      delete prevBookmarks[data.id];
-      setBookmarks(prevBookmarks);
-      setBookmarksOrder(bookmarksOrder.filter((item) => item !== data.id));
+      prevBookmarks.delete(data.id);
     }
+    setBookmarks(prevBookmarks);
     setIsBookmarked(!isBookmarked);
     onBookmarkToggle(isBookmarked);
     if (isModalOpen) {

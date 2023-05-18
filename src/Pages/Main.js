@@ -10,7 +10,7 @@ import {
   EmptyBookmarkListIndicator,
 } from "./styles/MainStyles";
 import Toast from "../Components/Toast";
-import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
+import { bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
 import { ReactComponent as EmptyFolderIcon } from "../folder-open-regular.svg";
 
@@ -23,7 +23,6 @@ const sliceArrayByCount = (arr) => {
 function Main() {
   const [products, setProducts] = useState({});
   const bookmarks = useRecoilValue(bookmarksState);
-  const bookmarksOrder = useRecoilValue(bookmarksOrderState);
 
   useEffect(() => {
     fetch("http://cozshopping.codestates-seb.link/api/v1/products?count=4")
@@ -37,12 +36,11 @@ function Main() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    localStorage.setItem(
+      "bookmarks",
+      JSON.stringify(Array.from(bookmarks.entries()))
+    );
   }, [bookmarks]);
-
-  useEffect(() => {
-    localStorage.setItem("bookmarksOrder", JSON.stringify(bookmarksOrder));
-  }, [bookmarksOrder]);
 
   const [toastMessages, setToastMessages] = useState([]);
   const addToastMessage = (message) => {
@@ -93,9 +91,9 @@ function Main() {
           <Link to="/bookmark">북마크 리스트</Link>
         </SectionTitle>
         <ItemList>
-          {bookmarks && bookmarksOrder.length > 0 ? (
-            sliceArrayByCount(bookmarksOrder).map((key) =>
-              CardGenerator(bookmarks[key], handleBookmarkToggle)
+          {bookmarks && bookmarks.size > 0 ? (
+            sliceArrayByCount(Array.from(bookmarks.values()).reverse()).map(
+              (value) => CardGenerator(value, handleBookmarkToggle)
             )
           ) : (
             <EmptyBookmarkListIndicator>

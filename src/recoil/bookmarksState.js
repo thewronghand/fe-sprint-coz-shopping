@@ -1,15 +1,10 @@
 import { atom } from "recoil";
 
-const initialBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
-const initialBookmarksOrder =
-  JSON.parse(localStorage.getItem("bookmarksOrder")) || [];
-
+const initialBookmarksData = localStorage.getItem("bookmarks");
+const initialBookmarks = initialBookmarksData
+  ? new Map(JSON.parse(initialBookmarksData))
+  : new Map();
 export const bookmarksState = atom({
   key: "bookmarksState",
   default: initialBookmarks,
-});
-
-export const bookmarksOrderState = atom({
-  key: "bookmarksOrderState",
-  default: initialBookmarksOrder,
 });

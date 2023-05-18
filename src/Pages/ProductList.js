@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"; // useRef 추가
 import { useInView } from "react-intersection-observer";
 import { useRecoilValue } from "recoil";
-import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
+import { bookmarksState } from "../recoil/bookmarksState";
 
 import CardGenerator from "../Components/CardVariations";
 import Toast from "../Components/Toast";
@@ -16,7 +16,6 @@ function ProductList() {
   const [products, setProducts] = useState([]);
 
   const bookmarks = useRecoilValue(bookmarksState);
-  const bookmarksOrder = useRecoilValue(bookmarksOrderState);
 
   const [currentFilter, setCurrentFilter] = useState("All");
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -40,12 +39,11 @@ function ProductList() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    localStorage.setItem(
+      "bookmarks",
+      JSON.stringify(Array.from(bookmarks.entries()))
+    );
   }, [bookmarks]);
-
-  useEffect(() => {
-    localStorage.setItem("bookmarksOrder", JSON.stringify(bookmarksOrder));
-  }, [bookmarksOrder]);
 
   useEffect(() => {
     const filterProducts = () => {
