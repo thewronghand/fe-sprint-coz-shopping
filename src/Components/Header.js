@@ -15,7 +15,7 @@ const HeaderBar = styled.header`
   padding-right: 78px;
   padding-left: 76px;
   box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.1);
-  z-index: 2;
+  z-index: 1;
 `;
 
 const LogoContainer = styled.section`

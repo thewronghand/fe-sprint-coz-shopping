@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import { bookmarksState } from "../recoil/bookmarksState";
 import { CardContainer, ImageContainer } from "./styles/CardStyles";
 import Bookmark from "./Bookmark";
+import Modal from "./Modal";
 
 function Card({ image, infoTop, infoBottom, data, onBookmarkToggle, title }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,24 +37,17 @@ function Card({ image, infoTop, infoBottom, data, onBookmarkToggle, title }) {
     <CardContainer>
       <>
         {isModalOpen && (
-          <div className="modal-backdrop" onClick={handleModalToggle}>
-            <article
-              className="modal-overlay"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="modal-close" onClick={handleModalToggle}>
-                <img src="modal-close.png" alt="modal-close" />
-              </div>
-              <div className="modal-overlay_overlay">
-                <Bookmark
-                  isBookmarked={isBookmarked}
-                  onClick={handleBookmarkUpdate}
-                />
-              </div>
-              <div className="modal-overlay_title">{title}</div>
-              {image}
-            </article>
-          </div>
+          <Modal
+            title={title}
+            image={image}
+            bookmark={
+              <Bookmark
+                isBookmarked={isBookmarked}
+                onClick={handleBookmarkUpdate}
+              />
+            }
+            onModalToggle={handleModalToggle}
+          />
         )}
         <ImageContainer onClick={handleModalToggle}>
           <div className="overlay" onClick={(e) => e.stopPropagation()}>
