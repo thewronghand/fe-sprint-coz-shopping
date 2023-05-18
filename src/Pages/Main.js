@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
-import { styled } from "styled-components";
+import { Link } from "react-router-dom";
 
-import Card from "../Components/Card";
-
+import {
+  MainContainer,
+  ListSection,
+  SectionTitle,
+  ItemList,
+  EmptyBookmarkListIndicator,
+} from "./styles/MainStyles";
 import Toast from "../Components/Toast";
 import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
@@ -14,54 +19,6 @@ const defaultProductViewCount = 4;
 const sliceArrayByCount = (arr) => {
   return arr.slice(0, defaultProductViewCount);
 };
-
-const MainContainer = styled.main`
-  padding-top: 52px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ListSection = styled.section`
-  display: flex;
-  width: 100vw;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const SectionTitle = styled.div`
-  width: 1130px;
-  font-weight: 600;
-  font-size: 24px;
-`;
-
-const ItemList = styled.ul`
-  width: 1152px;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  list-style: none;
-`;
-
-const EmptyBookmarkListIndicator = styled.div`
-  align-self: center;
-  justify-self: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 288px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #452cdd;
-  > .sub-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: black;
-    margin-top: 5px;
-  }
-`;
 
 function Main() {
   const [products, setProducts] = useState({});
@@ -122,7 +79,9 @@ function Main() {
   return (
     <MainContainer>
       <ListSection>
-        <SectionTitle>상품 리스트</SectionTitle>
+        <SectionTitle>
+          <Link to="/products/list">상품 리스트</Link>
+        </SectionTitle>
         <ItemList>
           {sliceArrayByCount(Object.keys(products)).map((key) =>
             CardGenerator(products[key], handleBookmarkToggle)
@@ -130,7 +89,9 @@ function Main() {
         </ItemList>
       </ListSection>
       <ListSection>
-        <SectionTitle>북마크 리스트</SectionTitle>
+        <SectionTitle>
+          <Link to="/bookmark">북마크 리스트</Link>
+        </SectionTitle>
         <ItemList>
           {bookmarks && bookmarksOrder.length > 0 ? (
             sliceArrayByCount(bookmarksOrder).map((key) =>

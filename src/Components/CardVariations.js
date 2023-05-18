@@ -112,8 +112,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
         />
       );
     default:
-      return;
-    // return <SkeletonItem />;
+      return <SkeletonItem />;
   }
 };
 

@@ -1,46 +1,31 @@
 import { useState, useEffect, useRef } from "react"; // useRef 추가
+import { useInView } from "react-intersection-observer";
 import { useRecoilValue } from "recoil";
-import { styled } from "styled-components";
-import CardGenerator from "../Components/CardVariations";
 import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
+
+import CardGenerator from "../Components/CardVariations";
 import Toast from "../Components/Toast";
 import Filter from "../Components/Filter";
-import { useInView } from "react-intersection-observer";
 import { ReactComponent as SkeletonLoading } from "../skeleton-loading.svg";
+import { ListContainer, ListMain } from "./styles/ListPageStyles";
 
 const maxToastCount = 4;
 const initialItemViewCount = 16;
 
-const ProductListMain = styled.main`
-  padding-top: 52px;
-  display: flex;
-  width: 100vw;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ProductListContainer = styled.ul`
-  max-width: 1152px;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-`;
-
 function ProductList() {
-  const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
-  const [toastMessages, setToastMessages] = useState([]);
+
   const bookmarks = useRecoilValue(bookmarksState);
   const bookmarksOrder = useRecoilValue(bookmarksOrderState);
+
   const [currentFilter, setCurrentFilter] = useState("All");
   const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [renderedItemsCount, setRenderedItemsCount] =
     useState(initialItemViewCount);
   const { ref, inView } = useInView({ threshold: 0 });
-  const loadingRef = useRef(null); // useRef로 스크롤 위치를 저장할 변수 추가
+  const loadingRef = useRef(null);
 
   useEffect(() => {
     fetch("http://cozshopping.codestates-seb.link/api/v1/products")
@@ -63,6 +48,20 @@ function ProductList() {
   }, [bookmarksOrder]);
 
   useEffect(() => {
+    const filterProducts = () => {
+      const filtered = Object.keys(products)
+        .filter((item) => {
+          if (currentFilter === "All") return true;
+          return products[item].type === currentFilter;
+        })
+        .slice(0, renderedItemsCount)
+        .map((item) => products[item]);
+      setFilteredProducts(filtered);
+    };
+    filterProducts();
+  }, [products, currentFilter, renderedItemsCount]);
+
+  useEffect(() => {
     let delay;
     if (inView && renderedItemsCount < products.length) {
       setIsLoading(true);
@@ -78,19 +77,12 @@ function ProductList() {
   }, [inView]);
 
   useEffect(() => {
-    const filterProducts = () => {
-      const filtered = Object.keys(products)
-        .filter((item) => {
-          if (currentFilter === "All") return true;
-          return products[item].type === currentFilter;
-        })
-        .slice(0, renderedItemsCount)
-        .map((item) => products[item]);
-      setFilteredProducts(filtered);
-    };
-    filterProducts();
-  }, [products, currentFilter, renderedItemsCount]);
+    if (!isLoading && loadingRef.current) {
+      loadingRef.current.scrollIntoView();
+    }
+  }, [isLoading]);
 
+  const [toastMessages, setToastMessages] = useState([]);
   const addToastMessage = (message) => {
     setToastMessages((prevMessages) => [message, ...prevMessages]);
   };
@@ -122,36 +114,27 @@ function ProductList() {
     addToastMessage(toastMessage);
   };
 
-  useEffect(() => {
-    if (!isLoading && loadingRef.current) {
-      // 로딩이 끝나고 스크롤 위치가 저장되어 있는 경우
-      loadingRef.current.scrollIntoView(); // 스크롤 위치로 이동
-    }
-  }, [isLoading]);
-
   return (
-    <ProductListMain>
+    <ListMain>
       <Filter setCurrentFilter={setCurrentFilter} />
-      <ProductListContainer>
+      <ListContainer>
         {filteredProducts.map((product, index) => {
           if (index === filteredProducts.length - 1) {
-            // 마지막 아이템일 때 loadingRef에 ref를 할당하여 스크롤 위치 저장
             return (
               <div key={product.id} ref={loadingRef}>
                 {CardGenerator(product, handleBookmarkToggle)}
               </div>
             );
-          } else {
-            return CardGenerator(product, handleBookmarkToggle);
           }
+          return CardGenerator(product, handleBookmarkToggle);
         })}
         <div className="toast-container">
           <Toast messages={toastMessages} removeToast={removeToastMessage} />
         </div>
-      </ProductListContainer>
+      </ListContainer>
       <div ref={ref} />
       {isLoading && <SkeletonLoading />}
-    </ProductListMain>
+    </ListMain>
   );
 }
 
