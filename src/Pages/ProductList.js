@@ -48,12 +48,11 @@ function ProductList() {
           if (currentFilter === "All") return true;
           return products[item].type === currentFilter;
         })
-        .slice(0, renderedItemsCount)
         .map((item) => products[item]);
       setFilteredProducts(filtered);
     };
     filterProducts();
-  }, [products, currentFilter, renderedItemsCount]);
+  }, [products, currentFilter]);
 
   useEffect(() => {
     setRenderedItemsCount(initialItemViewCount);
@@ -84,7 +83,7 @@ function ProductList() {
     <ListMain>
       <Filter setCurrentFilter={setCurrentFilter} />
       <ListContainer>
-        {filteredProducts.map((product, index) => {
+        {filteredProducts.slice(0, renderedItemsCount).map((product, index) => {
           if (index === filteredProducts.length - 1) {
             return (
               <div key={product.id} ref={loadingRef}>
@@ -99,7 +98,12 @@ function ProductList() {
         </div>
       </ListContainer>
       <div ref={ref} />
-      {isLoading && <SkeletonLoading />}
+      {currentFilter === "All" &&
+        products.length > renderedItemsCount &&
+        isLoading && <SkeletonLoading />}
+      {currentFilter !== "All" &&
+        filteredProducts.length > renderedItemsCount &&
+        isLoading && <SkeletonLoading />}
     </ListMain>
   );
 }
