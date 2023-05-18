@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react"; // useRef 추가
 import { useInView } from "react-intersection-observer";
 import { useRecoilValue } from "recoil";
 import { bookmarksState } from "../recoil/bookmarksState";
+import { useToast } from "../hooks/useToast";
+import useBookmarkSync from "../hooks/useBookmarkSync";
 
 import CardGenerator from "../Components/CardVariations";
 import Toast from "../Components/Toast";
@@ -9,13 +11,12 @@ import Filter from "../Components/Filter";
 import { ReactComponent as SkeletonLoading } from "../skeleton-loading.svg";
 import { ListContainer, ListMain } from "./styles/ListPageStyles";
 
-const maxToastCount = 4;
 const initialItemViewCount = 16;
 
 function ProductList() {
   const [products, setProducts] = useState([]);
-
-  const bookmarks = useRecoilValue(bookmarksState);
+  const { toastMessages, handleBookmarkToggle, removeToastMessage } =
+    useToast();
 
   const [currentFilter, setCurrentFilter] = useState("All");
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -38,12 +39,7 @@ function ProductList() {
       });
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "bookmarks",
-      JSON.stringify(Array.from(bookmarks.entries()))
-    );
-  }, [bookmarks]);
+  useBookmarkSync();
 
   useEffect(() => {
     const filterProducts = () => {
@@ -58,6 +54,10 @@ function ProductList() {
     };
     filterProducts();
   }, [products, currentFilter, renderedItemsCount]);
+
+  useEffect(() => {
+    setRenderedItemsCount(initialItemViewCount);
+  }, [currentFilter]);
 
   useEffect(() => {
     let delay;
@@ -79,38 +79,6 @@ function ProductList() {
       loadingRef.current.scrollIntoView();
     }
   }, [isLoading]);
-
-  const [toastMessages, setToastMessages] = useState([]);
-  const addToastMessage = (message) => {
-    setToastMessages((prevMessages) => [message, ...prevMessages]);
-  };
-  const removeToastMessage = (id) => {
-    setToastMessages((prevMessages) =>
-      prevMessages.filter((message) => message.id !== id)
-    );
-  };
-  const handleBookmarkToggle = (isBookmarked) => {
-    const toastMessage = {
-      id: Date.now(),
-      content: (
-        <div className="toast">
-          <img
-            src={!isBookmarked ? "/bookmark-on.png" : "/bookmark-off.png"}
-            alt={!isBookmarked ? "bookmark-on" : "bookmark-off"}
-          />
-          <div className="toast-message">
-            {isBookmarked
-              ? "상품이 북마크에서 제거되었습니다."
-              : "상품이 북마크에 추가되었습니다."}
-          </div>
-        </div>
-      ),
-    };
-    if (toastMessages.length >= maxToastCount) {
-      removeToastMessage(toastMessages[toastMessages.length - 1].id);
-    }
-    addToastMessage(toastMessage);
-  };
 
   return (
     <ListMain>

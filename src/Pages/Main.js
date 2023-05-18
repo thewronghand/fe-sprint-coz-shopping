@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { Link } from "react-router-dom";
-
+import { useToast } from "../hooks/useToast";
+import useBookmarkSync from "../hooks/useBookmarkSync";
 import {
   MainContainer,
   ListSection,
@@ -14,7 +15,6 @@ import { bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
 import { ReactComponent as EmptyFolderIcon } from "../folder-open-regular.svg";
 
-const maxToastCount = 4;
 const defaultProductViewCount = 4;
 const sliceArrayByCount = (arr) => {
   return arr.slice(0, defaultProductViewCount);
@@ -23,6 +23,8 @@ const sliceArrayByCount = (arr) => {
 function Main() {
   const [products, setProducts] = useState({});
   const bookmarks = useRecoilValue(bookmarksState);
+  const { toastMessages, handleBookmarkToggle, removeToastMessage } =
+    useToast();
 
   useEffect(() => {
     fetch("http://cozshopping.codestates-seb.link/api/v1/products?count=4")
@@ -35,44 +37,7 @@ function Main() {
       });
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "bookmarks",
-      JSON.stringify(Array.from(bookmarks.entries()))
-    );
-  }, [bookmarks]);
-
-  const [toastMessages, setToastMessages] = useState([]);
-  const addToastMessage = (message) => {
-    setToastMessages((prevMessages) => [message, ...prevMessages]);
-  };
-  const removeToastMessage = (id) => {
-    setToastMessages((prevMessages) =>
-      prevMessages.filter((message) => message.id !== id)
-    );
-  };
-  const handleBookmarkToggle = (isBookmarked) => {
-    const toastMessage = {
-      id: Date.now(),
-      content: (
-        <div className="toast">
-          <img
-            src={!isBookmarked ? "/bookmark-on.png" : "/bookmark-off.png"}
-            alt={!isBookmarked ? "bookmark-on" : "bookmark-off"}
-          />
-          <div className="toast-message">
-            {isBookmarked
-              ? "상품이 북마크에서 제거되었습니다."
-              : "상품이 북마크에 추가되었습니다."}
-          </div>
-        </div>
-      ),
-    };
-    if (toastMessages.length >= maxToastCount) {
-      removeToastMessage(toastMessages[toastMessages.length - 1].id);
-    }
-    addToastMessage(toastMessage);
-  };
+  useBookmarkSync();
 
   return (
     <MainContainer>

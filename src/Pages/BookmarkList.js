@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import { useRecoilValue } from "recoil";
 import { bookmarksState } from "../recoil/bookmarksState";
+import { useToast } from "../hooks/useToast";
+import useBookmarkSync from "../hooks/useBookmarkSync";
 
 import CardGenerator from "../Components/CardVariations";
 import Toast from "../Components/Toast";
@@ -11,12 +13,12 @@ import { ReactComponent as EmptyFolderIcon } from "../folder-open-regular.svg";
 import { EmptyBookmarkListIndicator } from "./styles/MainStyles";
 import { ListContainer, ListMain } from "./styles/ListPageStyles";
 
-const maxToastCount = 4;
 const initialItemViewCount = 16;
 
 function BookmarkList() {
   const bookmarks = useRecoilValue(bookmarksState);
-
+  const { toastMessages, handleBookmarkToggle, removeToastMessage } =
+    useToast();
   const [currentFilter, setCurrentFilter] = useState("All");
   const [filteredBookmarks, setFilteredBookmarks] = useState([]);
 
@@ -26,12 +28,7 @@ function BookmarkList() {
   const { ref, inView } = useInView({ threshold: 0 });
   const loadingRef = useRef(null);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "bookmarks",
-      JSON.stringify(Array.from(bookmarks.entries()))
-    );
-  }, [bookmarks]);
+  useBookmarkSync();
 
   useEffect(() => {
     const filterProducts = () => {
@@ -46,6 +43,10 @@ function BookmarkList() {
     };
     filterProducts();
   }, [bookmarks, currentFilter, renderedItemsCount]);
+
+  useEffect(() => {
+    setRenderedItemsCount(initialItemViewCount);
+  }, [currentFilter, setRenderedItemsCount]);
 
   useEffect(() => {
     let delay;
@@ -68,38 +69,6 @@ function BookmarkList() {
     }
   }, [isLoading]);
 
-  const [toastMessages, setToastMessages] = useState([]);
-  const addToastMessage = (message) => {
-    setToastMessages((prevMessages) => [message, ...prevMessages]);
-  };
-  const removeToastMessage = (id) => {
-    setToastMessages((prevMessages) =>
-      prevMessages.filter((message) => message.id !== id)
-    );
-  };
-  const handleBookmarkToggle = (isBookmarked) => {
-    const toastMessage = {
-      id: Date.now(),
-      content: (
-        <div className="toast">
-          <img
-            src={!isBookmarked ? "/bookmark-on.png" : "/bookmark-off.png"}
-            alt={!isBookmarked ? "bookmark-on" : "bookmark-off"}
-          />
-          <div className="toast-message">
-            {isBookmarked
-              ? "상품이 북마크에서 제거되었습니다."
-              : "상품이 북마크에 추가되었습니다."}
-          </div>
-        </div>
-      ),
-    };
-    if (toastMessages.length >= maxToastCount) {
-      removeToastMessage(toastMessages[toastMessages.length - 1].id);
-    }
-    addToastMessage(toastMessage);
-  };
-
   return (
     <ListMain>
       <Filter setCurrentFilter={setCurrentFilter} />
@@ -121,7 +90,7 @@ function BookmarkList() {
         </div>
       </ListContainer>
       <div ref={ref} />
-      {bookmarks.size === 0 && (
+      {currentFilter === "All" && bookmarks.size === 0 && (
         <EmptyBookmarkListIndicator>
           <EmptyFolderIcon
             style={{
@@ -134,9 +103,25 @@ function BookmarkList() {
           <div className="sub-title">뭔가 담아볼까요?</div>
         </EmptyBookmarkListIndicator>
       )}
-      {bookmarks.size > initialItemViewCount && isLoading && (
-        <SkeletonLoading />
+      {currentFilter !== "All" && filteredBookmarks.length === 0 && (
+        <EmptyBookmarkListIndicator>
+          <EmptyFolderIcon
+            style={{
+              width: "100px",
+              marginBottom: "10px",
+              fill: "#452cdd",
+            }}
+          />
+          <div>북마크한 상품이 하나도 없어요!</div>
+          <div className="sub-title">뭔가 담아볼까요?</div>
+        </EmptyBookmarkListIndicator>
       )}
+      {currentFilter === "All" &&
+        bookmarks.size > renderedItemsCount &&
+        isLoading && <SkeletonLoading />}
+      {currentFilter !== "All" &&
+        filteredBookmarks.length > renderedItemsCount &&
+        isLoading && <SkeletonLoading />}
     </ListMain>
   );
 }
