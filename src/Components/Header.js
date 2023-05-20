@@ -15,7 +15,7 @@ const HeaderBar = styled.header`
   padding-right: 78px;
   padding-left: 76px;
   box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.1);
-  z-index: 2;
+  z-index: 1;
 `;
 
 const LogoContainer = styled.section`
@@ -32,10 +32,14 @@ function Header() {
     <HeaderBar>
       <Link to="/">
         <LogoContainer>
-          <img className="logo-image" src="header-logo.png" alt="header-logo" />
+          <img
+            className="logo-image"
+            src="/header-logo.png"
+            alt="header-logo"
+          />
           <img
             className="logo-title"
-            src="header-title.png"
+            src="/header-title.png"
             alt="header-title"
           />
         </LogoContainer>

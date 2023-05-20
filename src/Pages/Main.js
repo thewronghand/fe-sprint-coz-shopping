@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { styled } from "styled-components";
-
+import { useRecoilValue } from "recoil";
+import { Link } from "react-router-dom";
+import { useToast } from "../hooks/useToast";
+import useBookmarkSync from "../hooks/useBookmarkSync";
+import {
+  MainContainer,
+  ListSection,
+  SectionTitle,
+  ItemList,
+  EmptyBookmarkListIndicator,
+} from "./styles/MainStyles";
 import Toast from "../Components/Toast";
-import { bookmarksOrderState, bookmarksState } from "../recoil/bookmarksState";
+import { bookmarksState } from "../recoil/bookmarksState";
 import CardGenerator from "../Components/CardVariations";
 import { ReactComponent as EmptyFolderIcon } from "../folder-open-regular.svg";
 
@@ -12,59 +20,11 @@ const sliceArrayByCount = (arr) => {
   return arr.slice(0, defaultProductViewCount);
 };
 
-const MainContainer = styled.main`
-  padding-top: 52px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ListSection = styled.section`
-  display: flex;
-  width: 100vw;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const SectionTitle = styled.div`
-  width: 1130px;
-  font-weight: 600;
-  font-size: 24px;
-`;
-
-const ItemList = styled.ul`
-  width: 1152px;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  list-style: none;
-`;
-
-const EmptyBookmarkListIndicator = styled.div`
-  align-self: center;
-  justify-self: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 288px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #452cdd;
-  > .sub-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: black;
-    margin-top: 5px;
-  }
-`;
-
 function Main() {
   const [products, setProducts] = useState({});
-  const [bookmarks, setBookmarks] = useRecoilState(bookmarksState);
-  const [bookmarksOrder, setBookmarksOrder] =
-    useRecoilState(bookmarksOrderState);
+  const bookmarks = useRecoilValue(bookmarksState);
+  const { toastMessages, handleBookmarkToggle, removeToastMessage } =
+    useToast();
 
   useEffect(() => {
     fetch("http://cozshopping.codestates-seb.link/api/v1/products?count=4")
@@ -77,47 +37,14 @@ function Main() {
       });
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
-  }, [bookmarks]);
-
-  useEffect(() => {
-    localStorage.setItem("bookmarksOrder", JSON.stringify(bookmarksOrder));
-  });
-
-  const [toastMessages, setToastMessages] = useState([]);
-  const addToastMessage = (message) => {
-    setToastMessages((prevMessages) => [message, ...prevMessages]);
-  };
-  const removeToastMessage = (id) => {
-    setToastMessages((prevMessages) =>
-      prevMessages.filter((message) => message.id !== id)
-    );
-  };
-  const handleBookmarkToggle = (isBookmarked) => {
-    const toastMessage = {
-      id: Date.now(),
-      content: (
-        <div className="toast">
-          <img
-            src={!isBookmarked ? "bookmark-on.png" : "bookmark-off.png"}
-            alt={!isBookmarked ? "bookmark-on" : "bookmark-off"}
-          />
-          <div className="toast-message">
-            {isBookmarked
-              ? "상품이 북마크에서 제거되었습니다."
-              : "상품이 북마크에 추가되었습니다."}
-          </div>
-        </div>
-      ),
-    };
-    addToastMessage(toastMessage);
-  };
+  useBookmarkSync();
 
   return (
     <MainContainer>
       <ListSection>
-        <SectionTitle>상품 리스트</SectionTitle>
+        <SectionTitle>
+          <Link to="/products/list">상품 리스트</Link>
+        </SectionTitle>
         <ItemList>
           {sliceArrayByCount(Object.keys(products)).map((key) =>
             CardGenerator(products[key], handleBookmarkToggle)
@@ -125,11 +52,13 @@ function Main() {
         </ItemList>
       </ListSection>
       <ListSection>
-        <SectionTitle>북마크 리스트</SectionTitle>
+        <SectionTitle>
+          <Link to="/bookmark">북마크 리스트</Link>
+        </SectionTitle>
         <ItemList>
-          {bookmarks && bookmarksOrder.length > 0 ? (
-            sliceArrayByCount(bookmarksOrder).map((key) =>
-              CardGenerator(bookmarks[key], handleBookmarkToggle)
+          {bookmarks && bookmarks.size > 0 ? (
+            sliceArrayByCount(Array.from(bookmarks.values()).reverse()).map(
+              (value) => CardGenerator(value, handleBookmarkToggle)
             )
           ) : (
             <EmptyBookmarkListIndicator>

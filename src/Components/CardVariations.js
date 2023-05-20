@@ -1,10 +1,54 @@
+import { styled } from "styled-components";
+import { ReactComponent as SkeletonLoading } from "../skeleton-loading.svg";
+
 import Card from "./Card";
+
+const SkeletonContainer = styled.li`
+  list-style: none;
+  margin: 12px;
+  width: 264px;
+  height: 264px;
+  min-width: 264px;
+  min-height: 264px;
+  border-radius: 12px;
+  > .item-info {
+    width: 100%;
+    height: 24px;
+    min-height: 24px;
+    font-weight: bold;
+  }
+`;
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: 210px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+`;
+
+function SkeletonItem() {
+  return (
+    <SkeletonContainer>
+      <ImageContainer>
+        <SkeletonLoading style={{ width: "100px" }} />
+      </ImageContainer>
+      <section className="item-info">불러오는 중...</section>
+    </SkeletonContainer>
+  );
+}
 
 const CardGenerator = (data, handleBookmarkToggle) => {
   switch (data.type) {
     case "Product":
       return (
         <Card
+          key={data.id}
           image={<img src={data.image_url} alt={data.title} />}
           infoTop={
             data.discountPercentage ? (
@@ -30,6 +74,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
       const title = `# ${data.title}`;
       return (
         <Card
+          key={data.id}
           image={<img src={data.image_url} alt={data.title} />}
           infoTop={title}
           data={data}
@@ -40,6 +85,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
     case "Exhibition":
       return (
         <Card
+          key={data.id}
           image={<img src={data.image_url} alt={data.title} />}
           infoTop={data.title}
           infoBottom={data.sub_title}
@@ -51,6 +97,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
     case "Brand":
       return (
         <Card
+          key={data.id}
           image={<img src={data.brand_image_url} alt={data.title} />}
           infoTop={
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -65,7 +112,7 @@ const CardGenerator = (data, handleBookmarkToggle) => {
         />
       );
     default:
-      return <Card />;
+      return <SkeletonItem />;
   }
 };
 
