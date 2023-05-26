@@ -16,10 +16,3 @@ function Modal({ title, image, bookmark, onModalToggle }) {
 }
 
 export default Modal;
-
-{
-  /* <Bookmark
-isBookmarked={isBookmarked}
-onClick={handleBookmarkUpdate}
-/> */
-}
