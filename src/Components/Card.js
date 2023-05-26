@@ -1,37 +1,20 @@
-import { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { bookmarksState } from "../recoil/bookmarksState";
 import { CardContainer, ImageContainer } from "./styles/CardStyles";
 import Bookmark from "./Bookmark";
 import Modal from "./Modal";
+import useModal from "../hooks/useModal";
+import useBookmarkUpdate from "../hooks/useBookmarkUpdate";
 
 function Card({ image, infoTop, infoBottom, data, onBookmarkToggle, title }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [bookmarks, setBookmarks] = useRecoilState(bookmarksState);
-  const [isBookmarked, setIsBookmarked] = useState(!!bookmarks.get(data.id));
-  const handleModalToggle = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
-  useEffect(() => {
-    setIsBookmarked(!!bookmarks.get(data.id));
-  }, [bookmarks, data.id]);
-
-  const handleBookmarkUpdate = () => {
-    const prevBookmarks = new Map(bookmarks);
-
-    if (!isBookmarked) {
-      prevBookmarks.set(data.id, data);
-    } else {
-      prevBookmarks.delete(data.id);
-    }
-    setBookmarks(prevBookmarks);
-    setIsBookmarked(!isBookmarked);
-    onBookmarkToggle(isBookmarked);
-    if (isModalOpen) {
-      setIsModalOpen(!isModalOpen);
-    }
-  };
+  const { isModalOpen, handleModalToggle } = useModal();
+  const { isBookmarked, handleBookmarkUpdate } = useBookmarkUpdate(
+    data,
+    () => {
+      if (isModalOpen) {
+        handleModalToggle();
+      }
+    },
+    onBookmarkToggle
+  );
 
   return (
     <CardContainer>
